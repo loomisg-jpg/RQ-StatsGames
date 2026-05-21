@@ -149,7 +149,6 @@
           const [roundScoring, setRoundScoring] = useState(null);
 
           useEffect(() => {
-            // Trigger Lucide icons replacement on state changes
             if (typeof lucide !== 'undefined') {
               lucide.createIcons();
             }
@@ -424,8 +423,7 @@
                       <div className="pt-4 border-t border-slate-800 flex justify-end">
                         <button
                           onClick={handleNextRound}
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all"
-                        >
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all">
                           {currentRoundIndex < 4 ? 'Next Client Case' : 'Review Performance Report'}
                           <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
