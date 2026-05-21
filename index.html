@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Data Consultant Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- React and ReactDOM CDN -->
+    <script src="[https://unpkg.com/react@18/umd/react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js)" crossorigin></script>
+    <script src="[https://unpkg.com/react-dom@18/umd/react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js)" crossorigin></script>
+    <!-- Babel CDN for JSX Compilation -->
+    <script src="[https://unpkg.com/@babel/standalone/babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js)"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const SCENARIOS = [
+          {
+            id: 'ind_t_1',
+            testType: 'Independent-samples t-test',
+            clientName: 'Dr. Sarah Jenkins (Education Department)',
+            dialogue: "We're trying to figure out if our new immersive virtual reality history curriculum actually improves test scores compared to our standard textbook curriculum. We split a cohort of 60 students randomly into two groups: 30 of them learned ancient history using VR headsets, and the other 30 used traditional textbook modules. At the end of the term, we gave everyone the same exam. We want to know if there's a statistically significant difference in their average exam scores.",
+            hint: "Think about the data being collected. You are comparing average exam scores (a continuous variable) between two distinct, non-overlapping groups of students.",
+            explanation: "An Independent-samples t-test is used because you are comparing the means of a continuous variable (exam score) between exactly two independent groups (VR vs. traditional textbook)."
+          },
+          {
+            id: 'ind_t_2',
+            testType: 'Independent-samples t-test',
+            clientName: 'Marcus Chen (Marketing Lead, TechStartup)',
+            dialogue: "We recently ran an A/B test on our app's checkout button. Users in group A saw a neon green button, while users in group B saw a minimalist dark blue button. We recorded the exact time in seconds it took each user to complete their checkout after clicking. How can we test if one color actually results in faster average checkout times than the other?",
+            hint: "You have two independent groups of users (Green vs. Blue) and you want to compare their average checkout time (continuous).",
+            explanation: "This requires an Independent-samples t-test because you are comparing the average values of a continuous outcome (time in seconds) across two separate, distinct groups."
+          },
+          {
+            id: 'pair_t_1',
+            testType: 'Paired-samples t-test',
+            clientName: 'Coach Elena Rostova (Varsity Athletics)',
+            dialogue: "I designed a new high-intensity cardiovascular training program for our basketball team. To see if it works, I measured each player's maximum oxygen uptake (VO2 max) in a lab before they started the 8-week program. I then measured the exact same players again after the program finished. I want to see if our players' average aerobic capacity significantly improved after completing my training.",
+            hint: "Look at the subjects. Are they different people in each group, or are you looking at the same individuals measured twice (before vs. after)?",
+            explanation: "A Paired-samples t-test is correct because you are comparing a continuous outcome (VO2 max score) measured twice on the exact same group of athletes (before and after)."
+          },
+          {
+            id: 'pair_t_2',
+            testType: 'Paired-samples t-test',
+            clientName: 'David Vance (Sleep Researcher)',
+            dialogue: "We are evaluating a new herbal tea blend designed to help with insomnia. We took 25 patients and monitored them in our lab for two nights. On Night 1, they slept normally without any tea. On Night 2, they drank our experimental tea 30 minutes before bed. We recorded the number of minutes they spent awake during the night for both sessions. Does the tea significantly reduce wake-time?",
+            hint: "Each participant acts as their own control. You have two measurements of sleep disruption (minutes awake) for the exact same set of 25 individuals.",
+            explanation: "Since you are comparing two related measurements (Night 1 vs. Night 2) from the same set of individuals on a continuous scale (minutes), a Paired-samples t-test is the perfect tool."
+          },
+          {
+            id: 'anova_1',
+            testType: 'ANOVA',
+            clientName: 'Dr. Arthur Pendelton (Agriculture Specialist)',
+            dialogue: "We're testing three different types of organic fertilizers—compost, seaweed extract, and manure tea—to see which one produces the heaviest heirloom tomatoes. We grew 90 tomato plants in identical soil conditions, randomly assigning 30 plants to each fertilizer group. At harvest, we weighed the tomatoes from each plant in grams. We want to know if there's any difference in average tomato weight among these three options.",
+            hint: "You have a single continuous outcome (tomato weight) and you are comparing it across three separate, independent fertilizer groups. A simple t-test can only handle two groups!",
+            explanation: "ANOVA (Analysis of Variance) is designed to compare the means of a continuous variable (weight) across three or more independent groups (compost vs. seaweed vs. manure)."
+          },
+          {
+            id: 'anova_2',
+            testType: 'ANOVA',
+            clientName: 'Sonia Gupta (HR Director, Apex Corp)',
+            dialogue: "We want to know if workspace style impacts employee productivity. We have three main office setups in our headquarters: traditional individual cubicles, open-plan workspaces, and private offices. We collected weekly productivity output scores (rated on a scale of 1 to 100) for 150 employees distributed across these three styles. How do we test if average productivity differs among the three setups?",
+            hint: "You are comparing productivity scores (continuous scale) across three distinct, non-overlapping groups of offices.",
+            explanation: "An ANOVA is the ideal test here because you want to determine if there are significant differences among the means of three separate groups."
+          },
+          {
+            id: 'corr_1',
+            testType: 'Correlation',
+            clientName: 'Dr. Linus Vance (Clinical Psychology)',
+            dialogue: "I'm studying the relationship between screen time and stress. I surveyed 100 college students, asking them for their daily smartphone screen time (measured in hours) and had them complete a standard clinical stress questionnaire (yielding a continuous scale score from 0 to 50). I want to see if high screen time is associated with higher stress levels, without implying that screen time necessarily causes the stress.",
+            hint: "You have two continuous variables measured for each student (hours of screen time and stress scale). You want to check the strength and direction of their association, without setting up a predictive model.",
+            explanation: "Correlation is the best choice here because you are investigating the linear association (strength and direction) between two continuous variables without designating one as a predictor to calculate an exact impact equation."
+          },
+          {
+            id: 'corr_2',
+            testType: 'Correlation',
+            clientName: 'Fiona Gallagher (Real Estate Developer)',
+            dialogue: "I have a dataset of 200 residential homes in our county. For each house, I have its total size in square feet and its distance to the nearest public transit station in meters. I want to see if there is a linear relationship between a home's square footage and its physical distance to transit. I just want to know if they tend to go up or down together.",
+            hint: "Both size (sq ft) and distance (meters) are continuous numerical variables. You simply want to check the strength and direction of their linear relationship.",
+            explanation: "Correlation is used to measure the strength and direction of a linear relationship between two continuous variables."
+          },
+          {
+            id: 'reg_1',
+            testType: 'Simple Linear Regression',
+            clientName: 'Elena Rostova (Fitness App Product Owner)',
+            dialogue: "We want to help users estimate their calorie burn during workouts. We monitored 150 users on treadmills and recorded their average heart rate during a workout. We want to build a mathematical formula that allows us to predict the total calories they burned based solely on their average heart rate. We want to be able to say: 'For every 1 beat-per-minute increase in heart rate, calorie burn increases by X amount.'",
+            hint: "You have two continuous variables (heart rate and calorie burn). But notice that you explicitly want to use one to predict the other and establish a concrete rate of change (slope).",
+            explanation: "Simple Linear Regression is correct because you want to predict a continuous outcome (calories burned) from a continuous predictor variable (heart rate) using a linear equation."
+          },
+          {
+            id: 'reg_2',
+            testType: 'Simple Linear Regression',
+            clientName: 'Dr. Gregory House (Medical Resident Director)',
+            dialogue: "We want to know if we can predict a medical resident's licensing exam score (from 0 to 100 points) based on the exact number of hours they spent studying. We tracked study hours and final scores for 80 residents. We want to construct an equation to estimate a resident's score based on their logged study hours.",
+            hint: "You have a continuous predictor (study hours) and a continuous outcome (exam score) and you want to predict/estimate the outcome using a linear mathematical model.",
+            explanation: "Simple Linear Regression allows you to build a predictive equation that models the relationship between a single continuous predictor and a continuous outcome variable."
+          },
+          {
+            id: 'chi_1',
+            testType: 'Chi-square test of independence',
+            clientName: 'Aldo Rossi (Art Gallery Curator)',
+            dialogue: "We hosted an exhibition with three different gallery rooms: Room A (Classical), Room B (Modernist), and Room C (Surrealist). We also asked 300 visitors to state their preferred artistic background (None, Casual Lover, or Professional Artist). We want to determine if a person's preferred artistic background is associated with the specific room they chose to spend the most time in.",
+            hint: "Identify the variables. Both 'artistic background' (None, Casual, Professional) and 'preferred room' (A, B, C) are categorical variables. You want to check if they are independent or associated.",
+            explanation: "A Chi-square test of independence is used when you are testing the association between two categorical variables (Artistic Background and Preferred Room)."
+          },
+          {
+            id: 'chi_2',
+            testType: 'Chi-square test of independence',
+            clientName: 'Nadia Petrova (Political Pollster)',
+            dialogue: "We surveyed 500 registered voters. We recorded their registered political party (Democrat, Republican, or Independent) and their primary news source (Television, Social Media, Newspapers, or Radio). We want to test whether there is a significant relationship between political party affiliation and a person's primary news source.",
+            hint: "Both 'political party' and 'primary news source' are categorical variables. You are checking if these categories are independent or linked.",
+            explanation: "The Chi-square test of independence is the standard tool to analyze the relationship between two categorical variables, determining if the distribution of one variable differs across the levels of the other."
+          }
+        ];
+
+        const STATS_MENU = [
+          'Correlation',
+          'Independent-samples t-test',
+          'Paired-samples t-test',
+          'ANOVA',
+          'Simple Linear Regression',
+          'Chi-square test of independence'
+        ];
+
+        function App() {
+          const [gameState, setGameState] = useState('welcome');
+          const [roundsList, setRoundsList] = useState([]);
+          const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
+          const [score, setScore] = useState(0);
+          const [attempt, setAttempt] = useState(1);
+          const [selectedAnswer, setSelectedAnswer] = useState(null);
+          const [isCorrect, setIsCorrect] = useState(false);
+          const [showHint, setShowHint] = useState(false);
+          const [roundScoring, setRoundScoring] = useState(null);
+
+          useEffect(() => {
+            // Trigger Lucide icons replacement on state changes
+            if (typeof lucide !== 'undefined') {
+              lucide.createIcons();
+            }
+          }, [gameState, currentRoundIndex, showHint, roundScoring]);
+
+          const initGame = () => {
+            const shuffled = [...SCENARIOS].sort(() => Math.random() - 0.5);
+            const selected = [];
+            const usedTypes = new Set();
+            
+            for (const sc of shuffled) {
+              if (!usedTypes.has(sc.testType) && selected.length < 5) {
+                selected.push(sc);
+                usedTypes.add(sc.testType);
+              }
+            }
+            while (selected.length < 5) {
+              const sc = shuffled.find(item => !selected.some(s => s.id === item.id));
+              if (sc) selected.push(sc);
+            }
+
+            setRoundsList(selected);
+            setCurrentRoundIndex(0);
+            setScore(0);
+            setAttempt(1);
+            setSelectedAnswer(null);
+            setIsCorrect(false);
+            setShowHint(false);
+            setRoundScoring(null);
+            setGameState('playing');
+          };
+
+          const handleSelectAnswer = (option) => {
+            const currentScenario = roundsList[currentRoundIndex];
+            setSelectedAnswer(option);
+            
+            if (option === currentScenario.testType) {
+              setIsCorrect(true);
+              const pointsWon = attempt === 1 ? 10 : 5;
+              setScore(prev => prev + pointsWon);
+              setRoundScoring(attempt === 1 ? 'first-try-correct' : 'second-try-correct');
+              setGameState('round-feedback');
+            } else {
+              setIsCorrect(false);
+              if (attempt === 1) {
+                setAttempt(2);
+                setShowHint(true);
+              } else {
+                setRoundScoring('failed');
+                setGameState('round-feedback');
+              }
+            }
+          };
+
+          const handleNextRound = () => {
+            if (currentRoundIndex < 4) {
+              setCurrentRoundIndex(prev => prev + 1);
+              setAttempt(1);
+              setSelectedAnswer(null);
+              setIsCorrect(false);
+              setShowHint(false);
+              setRoundScoring(null);
+              setGameState('playing');
+            } else {
+              setGameState('game-over');
+            }
+          };
+
+          const currentScenario = roundsList[currentRoundIndex];
+
+          return (
+            <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+              <header className="border-b border-slate-800 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50 px-4 py-3 sm:px-6">
+                <div className="max-w-6xl mx-auto flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg text-white shadow-lg">
+                      <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                      <h1 className="text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        The Data Consultant Simulator
+                      </h1>
+                      <p className="text-xs text-slate-400 hidden sm:block">Fictional Clients. Real Statistical Decisions.</p>
+                    </div>
+                  </div>
+
+                  {gameState !== 'welcome' && (
+                    <div className="flex items-center gap-4 sm:gap-6">
+                      <div className="flex flex-col items-end">
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Progress</span>
+                        <span className="text-sm sm:text-base font-bold text-slate-200">
+                          Round {currentRoundIndex + 1} <span className="text-slate-500 text-xs">/ 5</span>
+                        </span>
+                      </div>
+                      <div className="h-8 w-px bg-slate-800"></div>
+                      <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700">
+                        <i data-lucide="award" class="w-5 h-5 text-amber-400 animate-pulse"></i>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] uppercase tracking-wider text-amber-400/80 font-bold leading-none">Total Score</span>
+                          <span className="text-sm sm:text-base font-black text-amber-300 leading-none mt-0.5">{score} pts</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </header>
+
+              <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+                {gameState === 'welcome' && (
+                  <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden text-center max-w-2xl mx-auto">
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+                    <div className="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
+                    
+                    <div className="inline-flex p-4 rounded-full bg-indigo-500/10 text-indigo-400 mb-6 border border-indigo-500/20">
+                      <i data-lucide="sparkles" class="w-10 h-10"></i>
+                    </div>
+
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">Open For Business!</h2>
+                    <p className="text-slate-300 text-base sm:text-lg mb-6 max-w-lg mx-auto leading-relaxed">
+                      Congratulations! You've just opened your freelance <strong>Data Consulting Firm</strong>. 
+                      Local businesses, researchers, and creators are lining up outside your door.
+                    </p>
+
+                    <div className="bg-slate-900/80 rounded-xl p-5 border border-slate-800 text-left mb-8 max-w-lg mx-auto">
+                      <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2 mb-3">
+                        <i data-lucide="book-open" class="w-4 h-4 text-indigo-400"></i>
+                        Your Professional Mandate:
+                      </h3>
+                      <ul className="space-y-2 text-sm text-slate-400">
+                        <li className="flex gap-2">
+                          <span className="text-indigo-400 font-bold">1.</span>
+                          <span>Listen to clients describing their challenges in standard plain language.</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-indigo-400 font-bold">2.</span>
+                          <span>Select the correct statistical procedure from your <strong>6-option Menu</strong>.</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-indigo-400 font-bold">3.</span>
+                          <span>Earn <span className="text-emerald-400 font-semibold">10 pts</span> for first-attempt success, or <span className="text-amber-400 font-semibold">5 pts</span> if you need a diagnostic hint.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <button 
+                      onClick={initGame}
+                      className="group inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                    >
+                      Consult Client #1
+                      <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                  </div>
+                )}
+
+                {gameState === 'playing' && currentScenario && (
+                  <div className="space-y-6">
+                    <div className="w-full bg-slate-950 border border-slate-800 h-2.5 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out"
+                        style={{ width: `${(currentRoundIndex) * 20}%` }}
+                      />
+                    </div>
+
+                    <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-2 h-full bg-indigo-500" />
+                      <div className="flex items-start gap-4">
+                        <div className="relative flex-shrink-0">
+                          <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-lg">
+                            <i data-lucide="user" class="w-6 h-6 text-indigo-400"></i>
+                          </div>
+                          <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+                          </span>
+                        </div>
+
+                        <div className="flex-1">
+                          <div className="text-xs uppercase tracking-wider text-indigo-400 font-bold">Active Case Study</div>
+                          <h3 className="text-lg font-bold text-white mt-0.5">{currentScenario.clientName}</h3>
+                          <div className="text-xs text-slate-500">Consultant Visit #{currentRoundIndex + 1}</div>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 relative bg-slate-900/95 border border-slate-800 rounded-xl p-5 text-slate-100 italic text-base sm:text-lg leading-relaxed shadow-inner">
+                        <i data-lucide="message-square" class="w-8 h-8 text-indigo-900/30 absolute -top-3 -left-3"></i>
+                        <p className="relative z-10 font-medium">"{currentScenario.dialogue}"</p>
+                      </div>
+                    </div>
+
+                    {showHint && attempt === 2 && (
+                      <div className="bg-amber-950/30 border border-amber-800/60 rounded-xl p-4 flex items-start gap-3 text-amber-200 animate-fadeIn">
+                        <i data-lucide="help-circle" class="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">Diagnostic Hint:</h4>
+                          <p className="text-sm mt-1 leading-relaxed text-amber-100/90">{currentScenario.hint}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">Select Your Analysis Recommendation</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {STATS_MENU.map((option, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSelectAnswer(option)}
+                            className="group relative flex items-center justify-between text-left p-4 rounded-xl bg-slate-950/50 hover:bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all shadow-md focus:outline-none"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-slate-900 text-indigo-400 text-xs font-black flex items-center justify-center border border-slate-800 transition-colors">
+                                {idx + 1}
+                              </span>
+                              <span className="text-sm sm:text-base font-semibold text-slate-200 transition-colors">{option}</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all"></i>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {gameState === 'round-feedback' && currentScenario && (
+                  <div className="space-y-6 max-w-2xl mx-auto">
+                    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+                      <div className="text-center pb-6 border-b border-slate-800">
+                        {roundScoring === 'first-try-correct' && (
+                          <div className="inline-flex flex-col items-center">
+                            <div className="bg-emerald-500/10 text-emerald-400 p-4 rounded-full border border-emerald-500/30 mb-3">
+                              <i data-lucide="check-circle-2" class="w-12 h-12"></i>
+                            </div>
+                            <h2 className="text-2xl sm:text-3xl font-black text-white">Excellent Work!</h2>
+                            <span className="text-emerald-400 font-bold text-sm uppercase tracking-wider mt-1 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-900/50">+10 Points</span>
+                          </div>
+                        )}
+                        {roundScoring === 'second-try-correct' && (
+                          <div className="inline-flex flex-col items-center">
+                            <div className="bg-amber-500/10 text-amber-400 p-4 rounded-full border border-amber-500/30 mb-3">
+                              <i data-lucide="check-circle-2" class="w-12 h-12"></i>
+                            </div>
+                            <h2 className="text-2xl sm:text-3xl font-black text-white">Correct!</h2>
+                            <span className="text-amber-400 font-bold text-sm uppercase tracking-wider mt-1 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-900/50">+5 Points</span>
+                          </div>
+                        )}
+                        {roundScoring === 'failed' && (
+                          <div className="inline-flex flex-col items-center">
+                            <div className="bg-rose-500/10 text-rose-400 p-4 rounded-full border border-rose-500/30 mb-3">
+                              <i data-lucide="x-circle" class="w-12 h-12"></i>
+                            </div>
+                            <h2 className="text-2xl sm:text-3xl font-black text-white">Not Quite!</h2>
+                            <span className="text-rose-400 font-bold text-sm uppercase tracking-wider mt-1 bg-rose-950/80 px-3 py-1 rounded-full border border-rose-900/50">+0 Points</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="py-6 space-y-4">
+                        <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-800">
+                          <div className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 mb-1">The Client Needed:</div>
+                          <div className="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-400"></i>
+                            {currentScenario.testType}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 font-bold">Explanation:</h4>
+                          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{currentScenario.explanation}</p>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-slate-800 flex justify-end">
+                        <button
+                          onClick={handleNextRound}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all"
+                        >
+                          {currentRoundIndex < 4 ? 'Next Client Case' : 'Review Performance Report'}
+                          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {gameState === 'game-over' && (
+                  <div className="space-y-6 max-w-xl mx-auto text-center">
+                    <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500" />
+                      <div className="inline-flex p-4 rounded-full bg-indigo-500/10 text-indigo-400 mb-4 border border-indigo-500/20">
+                        <i data-lucide="trending-up" class="w-12 h-12"></i>
+                      </div>
+
+                      <h2 className="text-3xl font-extrabold text-white mb-1">Consulting Office Review</h2>
+                      <p className="text-xs text-slate-500 uppercase tracking-widest mb-6">Final Professional Scorecard</p>
+
+                      <div className="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 inline-block w-full max-w-xs mb-8">
+                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Final Cumulative Score</div>
+                        <div className="text-5xl font-black text-amber-300 tracking-tight">{score} <span className="text-lg text-slate-500">/ 50 pts</span></div>
+                        <div className="mt-4 pt-4 border-t border-slate-800">
+                          <div className="text-[10px] uppercase font-bold text-indigo-400">Your Consulting Rank:</div>
+                          <div className="text-base font-bold text-slate-200 mt-1">
+                            {score === 50 && "🏆 Principal Data Scientist"}
+                            {score >= 40 && score < 50 && "⭐ Senior Analytical Partner"}
+                            {score >= 25 && score < 40 && "📈 Professional Consultant"}
+                            {score < 25 && "🌱 Associate Researcher"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-slate-300 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
+                        {score === 50 && "Flawless performance! You perfectly identified all requirements, proving you understand statistics with expert precision."}
+                        {score >= 40 && score < 50 && "Excellent job! You successfully recommended accurate tests with minimal consulting hints."}
+                        {score >= 25 && score < 40 && "Good work! You correctly parsed several client needs. Keep practicing!"}
+                        {score < 25 && "You survived your first week of consulting! Take a close look at the differences between each test style."}
+                      </p>
+
+                      <button
+                        onClick={initGame}
+                        className="group inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all"
+                      >
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        Consult 5 New Clients
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </main>
+
+              <footer className="py-6 border-t border-slate-800 bg-slate-950/40 text-center text-slate-500 text-xs">
+                <p>© 2026 Data Consultant Simulator • Designed for Stats Education</p>
+              </footer>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
