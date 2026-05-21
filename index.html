@@ -15,7 +15,6 @@
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
-    <!-- Application Target Mount Point -->
     <div id="root">
         <div class="flex items-center justify-center min-h-screen">
             <div class="text-center space-y-3">
@@ -25,7 +24,6 @@
         </div>
     </div>
 
-    <!-- The React Game Logic stored as text to compile post-loading -->
     <script type="text/plain" id="game-source">
         const { useState } = React;
 
@@ -219,7 +217,6 @@
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg text-white shadow-lg">
-                      {/* Briefcase SVG */}
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -242,7 +239,6 @@
                       </div>
                       <div className="h-8 w-px bg-slate-800"></div>
                       <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700">
-                        {/* Award Trophy SVG */}
                         <svg className="w-5 h-5 text-amber-400 animate-pulse" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0h4m-4 0H8m12 3a3 3 0 100-6h-3v6h3zm-15-6a3 3 0 100 6h3V6H5z" />
                         </svg>
@@ -264,7 +260,6 @@
                     <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
                     
                     <div className="inline-flex p-4 rounded-full bg-indigo-500/10 text-indigo-400 mb-6 border border-indigo-500/20">
-                      {/* Sparkles SVG */}
                       <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
@@ -278,7 +273,6 @@
 
                     <div className="bg-slate-900/80 rounded-xl p-5 border border-slate-800 text-left mb-8 max-w-lg mx-auto">
                       <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2 mb-3">
-                        {/* BookOpen SVG */}
                         <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
@@ -305,7 +299,6 @@
                       className="group inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
                     >
                       Consult Client #1
-                      {/* ArrowRight SVG */}
                       <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
@@ -327,7 +320,6 @@
                       <div className="flex items-start gap-4">
                         <div className="relative flex-shrink-0">
                           <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-lg">
-                            {/* User SVG */}
                             <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
@@ -346,7 +338,6 @@
                       </div>
 
                       <div className="mt-6 relative bg-slate-900/95 border border-slate-800 rounded-xl p-5 text-slate-100 italic text-base sm:text-lg leading-relaxed shadow-inner">
-                        {/* MessageSquare SVG */}
                         <svg className="w-8 h-8 text-indigo-900/30 absolute -top-3 -left-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
@@ -356,7 +347,6 @@
 
                     {showHint && attempt === 2 && (
                       <div className="bg-amber-950/30 border border-amber-800/60 rounded-xl p-4 flex items-start gap-3 text-amber-200 animate-fadeIn">
-                        {/* HelpCircle SVG */}
                         <svg className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -382,7 +372,6 @@
                               </span>
                               <span className="text-sm sm:text-base font-semibold text-slate-200 transition-colors">{option}</span>
                             </div>
-                            {/* ArrowRight SVG */}
                             <svg className="w-4 h-4 text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
@@ -401,7 +390,6 @@
                         {roundScoring === 'first-try-correct' && (
                           <div className="inline-flex flex-col items-center">
                             <div className="bg-emerald-500/10 text-emerald-400 p-4 rounded-full border border-emerald-500/30 mb-3">
-                              {/* CheckCircle2 SVG */}
                               <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
@@ -413,7 +401,6 @@
                         {roundScoring === 'second-try-correct' && (
                           <div className="inline-flex flex-col items-center">
                             <div className="bg-amber-500/10 text-amber-400 p-4 rounded-full border border-amber-500/30 mb-3">
-                              {/* CheckCircle2 SVG */}
                               <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
@@ -425,7 +412,6 @@
                         {roundScoring === 'failed' && (
                           <div className="inline-flex flex-col items-center">
                             <div className="bg-rose-500/10 text-rose-400 p-4 rounded-full border border-rose-500/30 mb-3">
-                              {/* XCircle SVG */}
                               <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
@@ -440,7 +426,6 @@
                         <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-800">
                           <div className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 mb-1">The Client Needed:</div>
                           <div className="text-lg font-bold text-white flex items-center gap-2">
-                            {/* BarChart3 SVG */}
                             <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
@@ -458,7 +443,6 @@
                           onClick={handleNextRound}
                           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all">
                           {currentRoundIndex < 4 ? 'Next Client Case' : 'Review Performance Report'}
-                          {/* ArrowRight SVG */}
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                           </svg>
@@ -473,7 +457,6 @@
                     <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
                       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500" />
                       <div className="inline-flex p-4 rounded-full bg-indigo-500/10 text-indigo-400 mb-4 border border-indigo-500/20">
-                        {/* TrendingUp SVG */}
                         <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
@@ -507,7 +490,6 @@
                         onClick={initGame}
                         className="group inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-600 hover:to-indigo-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all"
                       >
-                        {/* RotateCcw SVG */}
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 6H16" />
                         </svg>
@@ -526,7 +508,6 @@
         }
     </script>
 
-    <!-- Custom loader script bypasses link formatting & sequential load order -->
     <script>
         (function() {
             const loadScript = (url, next, cross) => {
@@ -537,20 +518,17 @@
                 document.head.appendChild(s);
             };
 
-            const h = "https" + "://";
-            const u = "[unpkg.com/](https://unpkg.com/)";
-
-            // Sequential Loading Pattern to avoid race condition:
-            // 1. Tailwind CSS -> 2. React Core -> 3. React DOM -> 4. Babel Compiler -> 5. App Compilation
-            loadScript(h + "cdn.tailwindcss.com", () => {
-                loadScript(h + u + "react@18/umd/react.production.min.js", () => {
-                    loadScript(h + u + "react-dom@18/umd/react-dom.production.min.js", () => {
-                        loadScript(h + u + "@babel/standalone/babel.min.js", () => {
-                            // Extract, compile, and execute React game source
+            // Sequential Loading: Tailwind -> React -> ReactDOM -> Babel -> App
+            loadScript("https://cdn.tailwindcss.com", () => {
+                loadScript("https://unpkg.com/react@18/umd/react.production.min.js", () => {
+                    loadScript("https://unpkg.com/react-dom@18/umd/react-dom.production.min.js", () => {
+                        loadScript("https://unpkg.com/@babel/standalone/babel.min.js", () => {
                             const sourceCode = document.getElementById('game-source').text;
                             const compiledCode = Babel.transform(sourceCode, { presets: ['react'] }).code;
+                            // Mount the React app
+                            const mountScript = compiledCode + "\nReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));";
                             const runScript = document.createElement('script');
-                            runScript.text = compiledCode;
+                            runScript.text = mountScript;
                             document.body.appendChild(runScript);
                         }, false);
                     }, true);
